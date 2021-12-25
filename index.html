@@ -1,0 +1,2159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Functional Programming</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Functional Programming
+
+---
+
+# Agenda
+
+1. Brief history of langauges
+1. What is functional programming
+1. Functional programming compared to Object-oriented programming
+1. Why OOP became default?
+1. F# Basics
+1. Functional language key features
+1. Monads
+1. Examples: F# / Typescript / Clojure
+
+--
+
+<br/>
+ 
+#### Why F#?
+
+* Strongly-typed, functional-first programming language
+* Optional muli-pardigm
+  * Incorporating functional, imperative and OOP methods 
+  * Muli-pardigm not fused, can be used side by side.
+* Syntax close-ish to Typescript
+
+---
+
+# Install 
+
+* F#
+ * .NET (5 or newer)
+* Dev environment
+ * VS Code
+ * Ionide plugin
+* Koans
+ * https://github.com/ChrisMarinos/FSharpKoans
+
+--
+
+### Playgrounds
+
+* F# playground: https://fsharp.org/use/browser/
+* TypeScript playground: https://www.typescriptlang.org/play
+
+---
+
+# History
+
+In the __30s__:
+
+* Alonzo Church defined __Lambda Calculus ƛ__
+  * The theory behind functional programming
+* Alan Turing defined __Turing Machine__
+  * The theory that made imperative programming possible
+
+???
+
+In the olden times (2000's), FP / declarative was still concidered bad and C-like performance was the way to go...
+
+TODO 
+https://stackoverflow.com/questions/602444/functional-declarative-and-imperative-programming/8357604#8357604
+
+_Imperative_ HOW to do it | loop for 20 -> pick one from array -> put to array
+_Declarative_ WHAT to do (abstract away the details) | give  20 items to new array
+_Functional_
+
+---
+
+# History
+
+In the __50s__ practical implementations of those theories
+
+* John Backus, an IBM employee, created __FORTRAN__ 
+  * One of the first "high level" imperative programming languages. 
+* In the same years, John McCarthy created __Lisp__ in the MIT 
+  * A practical implementation of Lambda Calculus theory.
+
+![:scale 60%](./languages.gif)
+
+---
+
+#  What is functional programming?
+
+Object-oriented programming (__OOP__) and Functional programming (__FP__) have the shared goal:
+
+--
+
+> __Create understandable, flexible programs that are free of bugs__
+
+--
+
+But they have different approaches for how to best create those programs.
+
+---
+
+#  Formal definition
+
+> Object-oriented programming (OOP) is a programming paradigm based on the concept of "objects", which are data structures that contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods
+
+-- Wikipedia https://en.wikipedia.org/wiki/Object-oriented_programming
+
+
+> Functional programming is a programming paradigm, a style of building the structure and elements of computer programs, that treats computation as the evaluation of mathematical functions and avoids changing-state and mutable data 
+
+-- Wikipedia https://en.wikipedia.org/wiki/Functional_programming
+
+
+???
+
+* OOP
+  * Objects (contains data and methods)
+* FP
+  * Computation as the evaluation of mathematical functions 
+  * Avoids changing-state and mutable data
+---
+
+# Functional vs Object-Oriented
+
+In all programs, there are two primary components:
+
+--
+
+* __Data__ (the stuff a program knows) 
+* __Behaviors__ (the stuff a program can do to/with that data).
+
+---
+
+# Functional vs Object-Oriented
+
+__OOP__:
+* Put data and its associated behavior together in a single location (_"object"_)
+* Easier to understand how a program works
+
+__FP__:
+* Data and behavior are distinctively different things
+* Should be kept separate for clarity
+
+???
+
+* Functional way is followed more nowadays
+* __OOP__ says that bringing together data and its associated behavior in a single location (called an “object”) makes it easier to understand how a program works. 
+* __FP__ says that data and behavior are distinctively different things and should be kept separate for clarity.
+
+---
+
+# When to use FP / OOP
+
+> Whenever I write some code to deal with __data about people__ then __functional programming__ seems to work best
+
+--
+
+> Whenever I write some code to __simulate people__ then __object-oriented programming__ seems to work best
+
+
+--
+<br/>
+
+http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
+
+---
+
+# When to use FP / OOP
+
+* __OOP__ is about big picture
+* __FP__ is about small picture
+
+--
+
+
+* FP - small composable functions
+  * Make things simpler and easier to understand
+
+--
+
+
+* OOP - benefit in large apps
+  * Benefit more subtle at the beginning
+
+???
+
+* Take benefit of the both worlds
+
+* https://youtu.be/X_rxRMUGScA
+* https://dev.to/martinhaeusler/comment/4251
+
+---
+
+# FP Pros / Cons
+
+* Easier to understand
+* No side effects
+* Multithreading
+* Strict rules how to code
+
+--
+
+
+* Hard to understand
+* No abstraction
+* Mutable state often needed at some point
+  * Mutable state "outsourced" (Database, API, file)
+
+???
+
+* Elitism?
+* In FP abstraction is just composing functions together
+  * Makes complex code hard to understand
+
+* What was this link?
+  * https://github.com/reduxjs/redux/blob/master/src/createStore.js#L186
+  * This: https://github.com/reduxjs/redux/blob/1448a7c565801029b67a84848582c6e61822f572/src/createStore.js#L186 ?
+
+---
+
+
+# FP vs OOP Reality
+
+* Languages have evolved a lot
+
+--
+
+
+* Functional style is common
+* Classic OOP not so much anymore
+
+> "Modern" OO avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
+
+--
+
+
+* FP good for data handling
+  * API's mostly handle data
+  * Front ends mostly handle data
+
+???
+
+* Most functional examples are just functional style
+* Or is classic OOP still common somewhere?
+* Traditional OOP has not been common in ages
+  * Data bundled all the time. Less things to keep track. E.g. Data-object has data and functionality. No one considers it as bad practice. Objects not bad
+    * https://www.youtube.com/watch?v=GKYCA3UsmrU&feature=youtu.be&t=4m50s
+  * Sepearate Services and data
+  * Legacy
+     * Active Record (Rails): https://www.martinfowler.com/eaaCatalog/activeRecord.html
+     * Anemic domain model was anti-pattern
+
+---
+
+# Common OOP nowadays (Modern OOP)
+
+* Dumb value objects
+  * All about data they encapsulate. Methods are constructors and some Hash-functions used for comparisons etc.
+  * Records
+
+
+--
+
+
+* Stateless behaviour objects
+  * Service classes
+  * All state is passed in if needed ("dependency injection") 
+  * "Pure"-functions
+
+--
+
+
+* Module objects
+  * Grouping related functionality together
+
+--
+
+We're just using records and functions and modules and call them "objects" and "classes".
+
+---
+
+# Why OOP languages became popular?
+
+Programming is hard. 
+
+OOP languages come from the line of languages which tried to make programming (easily) approachable.
+
+```txt
+C -> C++ -> Java (1995)
+
+Basic -> Visual basic (1991)
+
+Smalltalk -> Python (1991)
+```
+
+--
+
+In the 90's functional languages were still more used by the academy.
+
+```txt
+Erlang (1986)
+Haskell (1990)
+Scala (2003)
+F# (2005)
+Clojure (2007)
+Elixir (2012)
+```
+
+--
+
+OOP languages usually have included bells & whistles out of the box.
+
+[Simon Peyton Jones - Haskell is (used to be) useless](https://www.youtube.com/watch?v=iSmkqocn0oQ)
+
+---
+
+# OOP - Information hiding
+
+Nothing with OOP is special
+
+* Encapsulation / Abstraction / information hiding
+  * Modules or functions can do that too
+
+--
+
+Modules hiding information:
+
+```js
+const url = 'https://myapi//endpoint'
+
+const fetchData = () => axios.fetch(url);
+
+export { fetchData }
+
+// or
+
+class Service {
+  this.url = 'https://myapi//endpoint';
+​
+  fetchData() {
+    return axios.fetch(this.url);
+  }
+}
+```
+
+---
+
+Functions hiding information:
+
+```js
+const createService = (connection) => ({
+  send: (data) => {
+    data.env = "createService";
+    connection.post(data);
+  },
+});
+​
+class Service {
+  constructor(connection) {
+    this.connection = connection;
+  }
+​
+  send(data) {
+    data.env = "Service";
+    this.connection.post(data);
+  }
+}
+
+const myAPIConnection = {
+  post: (data) => console.log(data),
+};
+​
+const data = { payload: "info" };
+
+const service = createService(myAPIConnection);
+const s = new Service(myAPIConnection);
+
+service.send(payload);
+s.send(payload);
+​```
+
+Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/38eb2a4851f0061911421ef8577785806d699d55/PatternsAndPrinciples/Patterns/Other/oop_vs_fp_modules.js)
+
+
+---
+
+# OOP - Inheritance
+
+* Inheritance
+  * Best practices nowadays encourages to use composition
+  * Even in game programming entity component systems are common
+
+```js
+TODO
+```
+
+---
+
+# OOP - Polymorphism
+
+* Polymorphism
+  * Pass functions as arguments instead of base-class objects...
+
+```js
+// BaseDataSender.send(payload)
+// AwsDataSender : BaseDataSender
+// SqlDataSender : BaseDataSender
+
+const send = (sender: BaseSender) => {
+    const data = getData();
+    sender.send(data);
+}
+
+// sendToAws = (payload) => {}
+// sendToSql = (payload) => {}
+const send = (senderFunc: (payload) => void) => {
+  const data = getData();
+  senderFunc(data);
+}
+```
+
+* Many OOP patterns can be implemented with functions but lose the type safety
+* Using typed data tries to hide complexity
+
+
+???
+
+* Ancestor of modern OOP languages is C which was extremely popular and it "extended" to C++ which is OOP language.
+* OOP languages have had good Standard libraries
+* Without inheritance, objects and methods are not that different from structs and procedures.
+
+https://www.youtube.com/watch?v=QyJZzq0v7Z4
+
+---
+
+# Functional language key features
+
+* Type inference
+* High order functions
+* Pure functions
+* Anonymous functions
+* Lazy evaluation
+* Pattern matching
+* Immutability
+* Tall call optimization
+* Curry & Partial application
+* Pipelining
+* No null or void "types"
+* Discriminated Union types
+* Declarative
+
+These features are pretty much same in all functional languages.
+
+???
+
+* How all this greatness can be achieved -> Good language features
+* Most of functional features are used in OO languages
+* F# has classes and methods from OO languages
+* Declarative, rather than imperative
+  * Performance not so great
+  * Scientific / real world examples?
+* FP is hard
+  * Category theory etc.
+* OOP is trying to be easy
+* Functional languages are often used by advanced programmers
+  * Therefore code has less bugs etc.
+
+---
+
+# F# Basics
+
+F# Koans from GitHub:
+
+https://github.com/ChrisMarinos/FSharpKoans#functional-koans---f
+
+---
+
+## Type inference
+
+Automatically detect types from the code
+
+--
+
+```fsharp
+let add x y = 
+  x + y
+```
+
+* __let__ keyword binds a name to value or function
+* __let__ is always constant
+* F# is typed language, 
+  * The type inference algorithm gathers information from many sources to determine the types
+
+--
+
+Depending which line is first, type is either int or string.
+
+```fsharp
+let resultInt = add 2 3
+// val resultInt : int = 5
+
+let resultStr = add "2" "3"
+// val resultStr : string = "23"
+```
+
+Both lines won't work at the same codebase.
+
+---
+
+## Type inference
+
+Types can be defined manually and sometimes compiler asks types if algorithm can't determine it from the source.
+
+```fsharp
+let add (x:int)(y:int) : int = 
+  x + y
+```
+
+--
+
+Can define only some of the parameters
+
+```fsharp
+let add (x:string) y = 
+  x + y
+```
+
+???
+
+* NOTE: This will take just single tuple parameter
+```fsharp
+let add (x:int, y:int) : int = 
+  x + y
+```
+---
+
+## Type inference in Typescript
+
+TS has partial inference
+
+```ts
+const numbers = [ 1, 2, 3, 4, 5 ];
+// const numbers: number[]
+
+const numbersOrText = [ 1, 2, 3, 4, 5, "text" ];
+// const numbersOrText: (string | number)[]
+```
+
+--
+
+No need to define return type
+
+```ts
+const add = (x: number, y: number) => x + y
+// const add: (x: number, y: number) => number
+
+const addString = (x: number, y: number) => (x + y).toString()
+// const addString: (x: number, y: number) => string
+```
+
+--
+
+If parameter doesn't have typed defined
+
+Expected to be _any_ -> Not full type inference
+---
+
+## Pure functions
+
+1. Given the same input, will always return the same output.
+
+2. Produces no side effects.
+
+![:scale 30%](./haskell_2x.png)
+
+???
+
+1. The function always returns the same result if the same arguments are passed in. It does not depend on any state, or data, change during a program’s execution. It must only depend on its input arguments.
+
+2. The function does not produce any observable side effects such as network requests, input and output devices, or data mutation.
+
+---
+
+## Pure functions
+
+Fetching from DB is a side effect
+```ts
+const getNewValue = (id: string, x: number) => {
+  const data = DB.get(id);
+  const result = data.value * x;
+  return result;
+}
+```
+
+--
+
+Data is passed to functions, so this is pure
+```ts
+const getNewValue = (data: any, x: number) => {
+  const result = data.value * x;
+  return result;
+}
+```
+--
+
+Function that returns the data is passed to function, so this is also pure
+```ts
+const getNewValue = (getData: (id: string) => any, id:string,  x: number) => {
+  const data = getData(id);
+  const result = data.value * x;
+  return result;
+}
+
+// const get = (id: string) => DB.get(id);
+// const get = (id: string) => ({ id, value: 2 });
+```
+
+---
+
+## Declarative
+
+> _"What is wanted, not how to do it"_
+
+--
+
+
+* Imperative = How to do 
+* Declarative = What is wanted to happen
+
+Declarative is higher abstraction
+
+--
+
+```ts
+const items = [ 1, 2, 3, 4, 5 ];
+
+// Imperative
+const results: number[] = [];
+
+for(const num of items) {
+  if (num % 2 == 0)
+    results.push(num);
+}
+```
+```js
+// Declarative
+const res = items.filter(num => num % 2 == 0);
+```
+
+---
+
+## Currying
+
+> A curried function is a function which takes multiple parameters one at a time, by taking the first argument, and returning a series of functions which each take the next argument until all the parameters have been fixed, and the function application can complete, at which point, the resulting value is returned
+
+--
+
+In functional languages functions are automatically curried. 
+
+--
+
+```fsharp
+let add x y = x + y
+let addFive = add 5
+
+let result = addFive 9
+
+// val add : x:int -> y:int -> int
+// val addFive : (int -> int)
+// val result : int = 14
+```
+
+--
+
+In non-functional languages additional libraries are needed. (e.g. Ramda)
+
+```js
+const adder = (x, y) => x + y;
+const curriedAdd = R.curry(adder);
+const add5 = curriedAdd(5);
+const results = add5(3);
+```
+
+???
+
+No need to provide all arguments when calling a function.
+
+---
+
+## Partial Application
+
+1. Providing function with fewer arguments than it expects is called Partial Application of functions
+
+2. Returns a function with fewer parameters
+
+--
+
+```fsharp
+let combine x y z = x + y + z
+let combineTH = combine "T" "H"
+let res = combineTH "E"
+
+// val combine : x:string -> y:string -> z:string -> string
+// val combineTH : (string -> string)
+// val res : string = "THE"
+```
+
+--
+
+Difference of _curry_ and _partial application_?
+
+Simple answer: 
+ * Currying: Providing one argument per-call. 
+ * Partial Application: Providing multiple arguments per-call
+
+_->_ Difference not so important...
+
+---
+
+## High order functions
+
+1. Take functions as parameters
+2. Return functions as result
+
+--
+
+```fsharp
+let addFive x fn = 
+  fn x + 5
+
+let double x =
+  x * 2
+
+let result = addFive 2 double
+
+// val addFive : x:'a -> fn:('a -> int) -> int
+// val double : x:int -> int
+// val result : int = 9
+```
+
+--
+
+```ts
+const addFive = (x: number, fn: (x: number) => void) => fn(x + 5)
+
+const sendtoS3 = (x: number) => console.log('Sending to S3', x);
+const saveToDb = (x: number) => console.log('Saving to DB', x);
+
+addFive(2, sendtoS3);
+
+const getAdd5 = (logger: (x: number) => void) => (x: number) => addFive(x, logger);
+const add55 = getAdd5(saveToDb);
+add55(6);
+```
+---
+
+## Immutability
+
+Can't change value after it is created
+
+Literally means "unchanging over time"
+
+```fsharp
+let result = 2
+// Won't do anything
+result = 4
+// Won't compile
+result <- 4
+```
+
+--
+
+Often languages have a way to define mutable values
+
+```fsharp
+let mutable result = 2
+result <- 4
+```
+
+---
+
+## Immutability
+
+* Javascript: const & let
+* Scala / Kotlin: val & var
+* C#: all are mutable
+
+> NOTE: Don't mix constant with real immutable. With constants variable cannot be re-assigned, nor re-declared, but object's properties are still mutable.
+
+```ts
+const immutable = 2;
+// Cannot assign to 'immutable' because it is a constant
+immutable = 4;
+
+const immu = { a: 2, b: 4};
+immu.a = 6;
+```
+
+---
+
+## Immutability
+
+Have to use libraries for real immutability.
+
+Javascript's `Object.freeze` makes objects shallowly immutable.
+
+```js
+const obj = {
+  a: {
+      b: 1,
+  },
+};
+
+Object.freeze(obj);
+// obj.a = null; // cannot compile
+// obj.b = true; // cannot compile
+obj.a.b = 2; // valid
+```
+
+---
+
+## Example: How to count things without mutable variables?
+
+Traditional for loop
+
+```ts
+const numbers = [ 1, 2, 3 ];
+
+let sum = 0;
+
+for(let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+}
+
+console.log(sum);
+```
+
+---
+
+## Solution: Recursion
+
+```ts
+const calculate = (seed: number, items: number[]) : any => {
+  if (items.some(e => e) === false)
+      return seed;
+
+  return calculate(seed + items[0], items.slice(1));
+}
+
+const numbers = [ 1, 2, 3 ];
+
+const sum = calculate(0, numbers);
+```
+
+--
+
+Recursion with F#
+
+```fsharp
+let numbers = [1; 2; 3]
+
+let rec calculate seed items =
+  match items with
+  | head::tail -> calculate (seed + head) tail
+  | _ -> seed
+
+let result = calculate 0 numbers
+```
+
+* _Hint:_ recursion is almost always a solution to your problem
+
+???
+
+More on pattern matching later
+---
+
+## Solution: Modern Libraries
+
+```ts
+const numbers = [ 1, 2, 3 ];
+
+const sum = numbers.reduce((agg, curr) => agg + curr, 0);
+
+// Some libraries provide sum out of the box
+const s = _.sum(numbers, ((e) => e));
+```
+
+--
+
+F#-solution. No one actually uses recursion.
+
+```fsharp
+let numbers = [1; 2; 3]
+
+let sum = Seq.reduce (fun x y -> x + y) numbers
+let sum2 = Seq.sum numbers
+
+// val numbers : int list = [1; 2; 3]
+// val sum : int = 6
+// val sum2 : int = 6
+```
+
+---
+
+## Ok, so why immutability is nice?
+
+1. Makes programs easier to understand
+
+```ts
+const data = { payload: 2 };
+processData(data);
+// Is data payload still 2?
+// Only way to be really sure is to test or check code
+```
+
+--
+
+```ts
+doSomethingAndUpdate(data);
+// vs
+const updated = doSomethingAndUpdate(data);
+```
+
+--
+
+When function returns a new object, program flow is usually easier to understand.
+
+Harder to create faults in logic, when can't mutate data.
+
+--
+
+Performance wise it might not be always best to create new object for every change. This is rarely a problem.
+
+---
+
+## Ok, so why immutability is nice?
+
+2. Multithreading
+
+> Immutable objects are useful in multithreaded applications because they can be safely accessed by several threads concurrently, without the need for locking or other synchronization
+
+```ts
+const data = { input: 2 };
+
+processData = (input) => {
+  data.payload = input;
+  // Do something
+  // Do something else
+  adapter.send(data);
+}
+
+thread.start(() => processData(22));
+thread.start(() => processData(2));
+```
+
+What did each thread send?
+
+--
+
+Pretty likely 22 on each thread. 
+
+--
+
+Often these can be solved with locks or proper flow design, but immutability a enforces good design.
+
+---
+
+
+## Recursion, Tail Call Optimization & Tail Recursion
+
+_Tail call optimization_ optimizes recursive functions to _tail recursive_ functions
+
+--
+
+_A tail recursion_ is a recursive function where the function calls itself at the end (_"tail"_) of the function
+
+--
+
+Optimization is done __automatically__ by the compiler
+
+--
+
+Often talked topic with functional languages -> must be a good thing (or is it?)
+
+--
+
+<br/>
+
+#### Tail Recursion Call Stack
+
+* Normal call allocates a stack frame for each call
+
+--
+
+* With tail recursion call reuses the current stack frame
+
+--
+
+> __ -> No stack overflows__
+
+???
+
+* Show this example before tail recursion:
+  * https://github.com/ttu/patterns-and-principles/blob/master/PatternsAndPrinciples/Patterns/Other/OOP_to_functions.cs
+  * Main loop with recursion
+* Call at the end must be a function
+* Many compilers optimize to change a recursive call to a tail recursive or an iterative call
+* Must be a good thing (or is it?)
+* Meaning a tail-recursive function will only use a single stack frame as opposed to hundreds or even thousands
+* https://github.com/microsoft/TypeScript/issues/32743
+* https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html#tail-recursion-elimination-on-conditional-types
+---
+
+## Tail Recursion
+
+The compiler is simply able to transform this
+
+```csharp
+int fac_times(int n, int acc) {
+  if (n == 0) 
+    return acc;
+  else 
+    return fac_times(n - 1, acc * n);
+}
+```
+
+into something like this:
+
+--
+
+```csharp
+int fac_times(int n, int acc) {
+label:
+    if (n == 0) return acc;
+    acc *= n--;
+    goto label;
+}
+```
+
+If the compiler cannot reduce recursion to a loop, you are stuck with recursion. All or nothing.
+
+---
+
+## Tail Recursion Stack Trace Example
+
+e.g. sum(5) = 5 + 4 + 3 + 2 + 1 = 15
+
+--
+
+#### Recursive
+
+As last call is not a function, tail call optimization can't be done
+
+```js
+function sum(x) {
+  if (x===1) {
+      return x;
+  } else {
+      return x + sum(x-1);
+  }
+}
+```
+
+--
+
+Stacktrace
+
+```sh
+1> sum(5)
+2> 5 + sum(4)
+3> 5 + (4 + sum(3))
+4> 5 + (4 + (3 + sum(2)))
+5> 5 + (4 + (3 + (2 + sum(1))))
+6> 5 + (4 + (3 + (2 + 1)))
+15
+```
+
+???
+
+* Compiler needs to execute every function, before it can starts the calculation
+
+---
+
+## Tail Recursion Stack Trace Example
+
+#### Tail recursive
+
+```js
+function sum(x, running_total=0) {
+  if (x===0) {
+      return running_total;
+  } else {
+      return sum(x-1, running_total+x);
+  }
+}
+```
+
+--
+
+Stacktrace
+
+```sh
+1> sum(5, 0)
+1> sum(4, 5)
+1> sum(3, 9)
+1> sum(2, 12)
+1> sum(1, 14)
+1> sum(0, 15)
+15
+```
+
+???
+
+* Source: https://stackoverflow.com/a/37010
+
+---
+
+## Tail Recursion Example
+
+__NOTE:__ _C# Compiler_ doesn't always do _tail call_ optimiazation. Example code has manually added `goto` and `label`.
+
+```csharp
+// Compiler could optimize this
+private int RecSum(int x, int runningTotal = 0)
+{
+	if (x == 0)
+		return runningTotal;
+	else
+		return RecSum(x - 1, runningTotal + x);
+}
+
+private int TailRecSum(int x, int runningTotal = 0)
+{
+	TailRecursion:
+	if (x == 1)
+		return runningTotal;
+    runningTotal += x--;
+	goto TailRecursion;
+}
+```
+
+---
+
+## Tail Recursion - Why?
+
+#### Stack overflow
+
+Functional languages highly rely on recursion
+
+Tail call optimization is essential in functional languages
+
+Without tail recursion, long-running recursive functions would exhaust the call stack and fail due to stack overflow exceptions
+
+--
+
+#### Performance
+
+Normal recursive methods are really abusive to the call stack
+  * Each call creates a new stack frame for the context of the new method (arguments, local variables, etc.)
+
+Tail recursion replaces the current stack frame
+
+---
+
+## Tail Recursion - Why not needed?
+
+Sometimes tailcall is a performance win-win
+
+Sometimes tailcall is a performance loss, stack win
+
+--
+
+Tail call will eliminate stack trace and recursion won't show as a recursion
+
+--
+
+Recursion should not be a day to day tool to solve all problems
+
+--
+
+<br/>
+
+> _I don't believe in recursion as the basis of all programming. This is a fundamental belief of certain computer scientists, especially those who love Scheme and like to teach programming by starting with a "cons" cell and recursion._ 
+
+> _But to me, seeing recursion as the basis of everything else is just a nice theoretical approach to fundamental mathematics (turtles all the way down), not a day-to-day tool._
+
+_Guido Van Rossum_
+
+???
+
+* CLR is a complex machine
+* https://github.com/dotnet/roslyn/issues/1235#issuecomment-406770344
+* http://neopythonic.blogspot.com/2009/04/tail-recursion-elimination.html
+* Although everyone talks highly about it, it might not be needed
+
+---
+
+## Tail Recursion - Why not needed?
+
+Recursion is not the most common solutions in imperative languages, so Tail Call optimization is not always needed
+
+Maybe some other feature is more important?
+
+--
+
+Java used to have security features that relied on stack count
+
+> _"in JDK classes [...] there are a number of security sensitive methods that rely on counting stack frames between JDK library code and calling code to figure out who's calling them."_
+
+> [Brian Goetz (Java Language Architect at Oracle](https://www.youtube.com/watch?v=2y5Pv4yN0b0&t=1h02m18s)
+
+--
+
+Features are not free to implement, so if not needed don't do it
+
+> _"Features aren't cheap; they are extremely expensive and they must not only justify their own cost, they must justify the opportunity cost of not doing the hundred other features we could have done with that budget."_
+
+> [Eric Lippert](http://stackoverflow.com/a/4914207/1272233)
+
+---
+
+## Pipelining
+
+Method chaining, where output of one element is the input of the next one
+
+```fsharp
+let add x y = x + y
+let square x = x * x
+let toString x = x.ToString()
+
+let completeFunction x = toString(add 5 (square x))
+
+let completeFunction x = x |> square |> add 5 |> toString
+```
+
+
+???
+
+* TODO: Get All data, get only some, do some other
+* Pipelining coming also to Javascript
+* Extremely useful with data handling
+* LINQ is similar
+
+---
+
+## Pipelining in Javascript
+
+[Pipeline operator proposal history](https://github.com/tc39/proposal-pipeline-operator/blob/main/HISTORY.md)
+
+```fsharp
+Type Email = { Date: Date, Title: string }
+
+let todaysTitles (items: List<Email>) : List<string> = 
+  items
+      |> Seq.filter(fun x -> x.Date = DateTime.Now.Date)
+      |> Seq.map(fun x -> x.Title)
+```
+
+--
+
+Chaining is a common way to achieve same readability, and some types support chaining.
+
+```js
+type Email = { date: Date, title: stirng };
+
+const todaysTitles = (items: Email[]) : string[] => 
+  items
+    .filter(x => x.data === Date.now())
+    .map(x => x.title)
+```
+
+---
+
+## Chaining in Javascript
+
+Object to be chainable, requires that each function will return instance of same type as itself.
+
+```ts
+class Chainable {
+  constructor(public value: number){}
+
+  add(i: number) {
+    this.value += i;
+    return this; // return itself
+  }
+  
+  double() {
+    this.value = this.value * 2;
+    return new Chainable(this.value); // return new instance
+  }
+}
+
+const c = new Chainable(2);
+const result = c.add(2).double().value;
+// result = 8
+```
+
+---
+
+## Chaining in Javascript
+
+Array example. Add new function to Array.
+
+```js
+Array.prototype.betterMap = (callback) => {
+  const newArray = new Array()
+  // Do something
+  return newArray
+}
+
+const result = items.map(x => x.desciption).betterMap(x => x);
+```
+---
+
+## Composing
+
+```fsharp
+let add2 a = a + 2
+let multiply3 a = a * 3
+
+let calculation = add2 >> multiply3
+let result = calculation 3
+
+// val add2 : a:int -> int
+// val multiply3 : a:int -> int
+// val calculation : (int -> int)
+// val result : int = 15
+```
+
+--
+
+Direction can be both ways
+
+```fsharp
+let calculation = add2 << multiply3
+let result = calculation 3 
+// val result : int = 11
+```
+
+???
+
+* Compose returns a function instead of immediately invoking the sequence.
+* https://stackoverflow.com/a/10096444/1292530
+* https://fsharpforfunandprofit.com/posts/function-composition/#composition-vs-pipeline
+
+---
+
+## Composing 
+
+Example with multiple arguments
+
+```fsharp
+let add a b = a + b
+let multiply a b = a * b
+
+let calculate = add 2 >> multiply 3
+
+let result = calculate 2
+val add : a:int -> b:int -> int
+val multiply : a:int -> b:int -> int
+val calculate : (int -> int)
+val result : int = 12
+```
+
+---
+
+## Composing
+
+https://suave.io/restful.html
+
+```fsharp
+let app =
+  GET >=> path "/test"
+  >=> OK (UTF8.bytes it)
+  >=> setMimeType "application/json; charset=utf-8"
+```
+
+`>=>` Kleisli composition operator for monads
+
+
+--
+
+* `>=>` is just a function composition
+* `>>` wouldn't work here since the return type of the first function isn't the argument of the second one
+  * it is wrapped in a Result<'t> and needs to be unwrapped, which is exactly what >=> implementation does.
+
+https://stackoverflow.com/questions/30110964/what-f-sorcery-is-this
+
+???
+
+* F# / Functional languages have lot's of weird functionality
+---
+
+## No void "type"
+
+The unit type is a special type that represents the lack of a value
+
+```fsharp
+let sendData data =
+  //...sending the data to the server...
+  ()
+
+sendData "help"
+
+// val sendData : data:'a -> unit
+// val it : unit = ()
+```
+
+???
+
+No nulls / undefines is also a common feature in other languages
+NullReferenceException, undifined is not a....
+
+---
+
+## ADT / Algebraic data type
+
+> In computer programming, especially functional programming and type theory, an algebraic data type is a kind of composite type, i.e., a type formed by combining other types.
+https://en.wikipedia.org/wiki/Algebraic_data_type
+
+--
+
+**ADT ==  type formed by combining other types** :+1:
+
+--
+
+> Two common classes of algebraic types are product types (i.e., tuples and records) and sum types (i.e., tagged or disjoint unions, coproduct types or variant types)
+https://en.wikipedia.org/wiki/Algebraic_data_type
+
+Product types are pretty basic
+
+Let's go though unions
+
+---
+
+## Discriminated Union Types
+
+```fsharp
+type Person = { firstName:string; lastName:string }  // define a record type
+type IntOrBool = I of int | B of bool
+
+type MixedType =
+  | Tup of int * int  // a tuple
+  | P of Person       // use the record type defined above
+  | L of int list     // a list of ints
+  | U of IntOrBool    // use the union type defined above
+```
+
+--
+
+```fsharp
+let person = { firstName = "Timmy"; lastName = "Tester" }
+let person2 = P { firstName = "Timmy"; lastName = "Tester" }
+
+// Note: Typewise Person and MixedType.P are not same
+
+let num = 2
+let num2 = U (I 2)
+// val num : int = 2
+// val num2 : MixedType.U = 2
+```
+
+???
+
+* TODO: Example
+* No need to have complex types/classes as these can represent complex types easily
+
+---
+
+
+---
+
+## No null / Maybe types
+
+Maybe types are used to represent operations that may or may not return a value. 
+
+--
+
+F# has Option type
+
+```fsharp
+type Option<'a> =
+   | Some of 'a
+   | None
+```
+
+--
+
+```fsharp
+let someValue = Some 10
+let noValue = None
+
+let someIsSome = someValue.IsSome
+let someIsNone = someValue.IsNone
+let some = someValue.Value
+let noIsSome = noValue.IsSome
+
+// val someValue : int option = Some 10
+// val noValue : 'a option
+// val someIsSome : bool = true
+// val someIsNone : bool = false
+// val some : int = 10
+// val noIsSome : bool = false
+```
+
+???
+
+* The null value is not normally used in F# for values or variables. However, null appears as an abnormal value in certain situations
+* e.g. using types from API that was not written with F#
+
+---
+
+## Option
+
+There is still null and NullReferenceException
+
+```fsharp
+let noValue = None
+let exception = noValue.Value
+```
+
+--
+
+Pattern matching is the way to get the value
+
+```fsharp
+let someValue = Some 10
+
+let getValue x = 
+    match x with
+        | Some x -> x
+        | None -> 0
+
+let result = getValue someValue
+```
+
+--
+
+Ternerary like operation is also possible
+
+```fsharp
+let someValue = Some 10
+let result = if someValue.IsSome then someValue.Value else -1
+```
+
+???
+
+* Why imperative languages don't have Maybe-type? Not a solution for everything.
+
+---
+
+## Option and Pattern Matching
+
+Power of Option is in pattern matching and Option-functions
+
+```fsharp
+let getStars stars =
+  match stars with
+  | 3 -> "***"
+  | 2 -> "**"
+  | 1 -> "*"
+  | _ -> "Invalid rating"
+
+let getText rating =
+  match rating with
+  | Some stars -> getStars stars
+  | None -> "Not rated"
+
+let rating = Some 3
+let text = getText rating
+let rating2 = None
+let text2 = getText rating2
+
+// val getStars : stars:int -> string
+// val getText : rating:int option -> string
+// val rating : int option = Some 3
+// val text : string = "***"
+// val rating2 : 'a option
+// val text2 : string = "Not rated"
+```
+
+???
+
+* getStart matches with any int
+* getText matches with Option Some/None
+---
+
+## Some and Option-functions
+
+The option module also includes functions that correspond to the functions that are available for lists, arrays, sequences, and other collection types.
+
+```fsharp
+let decideOn rating =
+    rating
+    |> Option.map (fun stars -> if stars > 2 then "watch it" else "don't watch")
+
+let rating = Some 3
+let decision = decideOn rating
+let rating2 = Some 1
+let decision2 = decideOn rating2
+let rating3 = None
+let decision3 = decideOn rating3
+
+// val decideOn : rating:int option -> string option
+// val rating : int option = Some 3
+// val decision : string option = Some "watch it"
+// val rating2 : int option = Some 1
+// val decision2 : string option = Some "don't watch"
+// val rating3 : 'a option
+// val decision3 : string option = None
+```
+
+---
+
+# Monads
+
+> _A monad is just a monoid in the category of endofunctors_
+
+...
+
+--
+
+### Problem
+
+1. Monad is a hard thing to understand and after you do, you still can't explain it easily
+
+> _“Once you understand monads, you immediately become incapable of explaining them to anyone else” Lady Monadgreen’s curse ~ Gilad Bracha_
+
+---
+
+# Monads
+
+
+* Monads are not data structures or a particular function
+
+--
+
+
+* Monads are a design pattern for expressing sequential computation in a purely functional way with constraints on side effects
+
+--
+
+![:scale 80%](./di_monad_comic.jpg)
+
+https://twitter.com/hmemcpy/status/771359835514368000
+
+---
+
+# Monads
+
+### Reality 
+
+1. Pure functional languages like Haskell use this Monads to isolate impurity (side effects). 
+1. Any function that talks to the outside world will return an IO Monad.
+1. Real Monads require full support from the language
+1. Concept is widly talked although not that important
+
+???
+
+* Haskelö is at the moment the ultimate-language and it has the concept of monad so all cool languages should also have
+---
+
+# Monads
+
+### Solution
+
+1. Forget whole monad thing as you don't actually need this information on anything
+
+__Very simple definition:__
+
+Monad is a container, that has a value inside and it will be evaluated after all the attached operations are executed
+
+???
+Althoug some articles just use monad and expect you to know what it is
+
+https://gist.github.com/gvolpe/1454db0ed9476ed0189dcc016fd758aa
+
+Very simple definition is not correct, but close enough
+
+https://twitter.com/unclebobmartin/status/982229999276060672
+
+---
+
+# Functor, Applicative & Monad
+
+__Functors:__ you apply a function to a wrapped value using __map__
+
+__Applicatives:__ you apply a wrapped function to a wrapped value using __apply__
+
+__Monads:__ you apply a function that returns a wrapped value, to a wrapped value using __flatMap__
+
+![:scale 80%](./monads.png)
+
+???
+
+* Before monads, need to understand functors and applicatives
+* Applicative and Monad are already so close together, so showing the difference might be hard
+
+Examples:
+
+C#: https://mikhail.io/2018/07/monads-explained-in-csharp-again/
+C#: https://gist.github.com/ToJans/e57e2170e050a671e07b
+
+---
+
+# Normal Function
+
+![:scale 80%](./monads_normalfunction.png)
+
+You can apply function to value
+
+```fsharp
+let number = 2;
+let funAddThree x = x + 3;
+
+let result = funAddThree number
+```
+
+???
+---
+
+# Context
+
+![:scale 20%](./monads_context.png)
+
+* Context is an important part of monads
+* Any value can be in a context
+
+```fsharp
+let twoInContext = Some 2
+```
+--
+
+> __Think context as a box that you can put a value in__
+
+---
+
+# Context
+
+Maybe (_Just|None_) from Haskell
+
+![:scale 20%](./monads_maybe.png)
+
+--
+
+Option (_Some|None_) from F#
+```fsharp
+let myValue = Some 2
+// val myValue : int option = Some 2
+
+let myValue = None
+// val myValue : 'a option
+```
+
+---
+
+# Context
+
+Problem. When a value is wrapped in a context, you can’t apply a normal function to it.
+
+![:scale 20%](./monads_functioncontext.png)
+
+```fsharp
+let someValue = Some 10
+let addThree x = x + 3
+
+// Error
+let result = addThree someValue
+```
+
+---
+
+# Solution: Functors
+
+Functors apply a function to a wrapped value
+
+![:scale 80%](./monads_functor.png)
+
+---
+
+# Functors
+
+![:scale 80%](./monads_functorunwrap.png)
+
+```fsharp
+// A Functor is any type that defines how map applies to it
+// And map magically applies this function, because Option is a Functor
+let wrapperValue  = Some 10
+let mapAddTwo = Option.map (fun x -> x + 2)
+let mapResult = wrapperValue |> mapAddTwo
+
+// val myValue : int option = Some 10
+// val mapTwo : (int option -> int option)
+// val mapResult : int option = Some 12
+```
+---
+
+# Functors
+
+List is also a Functor
+
+F#:
+```fsharp
+// A Functor is any type that defines how map applies to it
+// And map magically applies this function, because List is a Functor
+let numbers = [1; 2; 3]
+let myMap = List.map (fun x -> x + 1) 
+let result = numbers |> myMap
+
+// val numbers : int list = [1; 2; 3]
+// val myMap : (int list -> int list)
+// val result : int list = [2; 3; 4]
+```
+
+Typescript
+```ts
+const numbers = [ 1, 2, 3 ];
+const result = numbers.map(e => e + 1);
+// const result = [ 2, 3, 4 ]
+```
+
+???
+
+* Promise is a functor. Promise's map is then
+* Task is a functor. Taks's map is ContinueWith
+---
+
+# Applicatives
+
+Applicative has the function and the value wrapped in context.
+
+![:scale 80%](./monads_applicative.png)
+
+Use built in function Option.bind to deal with applicatives
+```fsharp
+let wrapperValue = Some 2
+let myFunc x = Some (x + 3)
+
+let result = Option.bind myFunc wrapperValue
+
+// val wrapperValue : int option = Some 2
+// val myFunc : x:int -> int option
+// val result : int option = Some 5
+```
+
+---
+
+# Applicatives
+
+If function is None will return None
+
+![:scale 80%](./monads_applicativenone.png)
+
+```fsharp
+let wrapperValue = None
+let myFunc x = Some (x + 3)
+
+let result = Option.bind myFunc wrapperValue
+
+// val wrapperValue : 'a option
+// val myFunc : x:int -> int option
+// val result : int option = None
+```
+
+---
+
+# Applicatives
+
+If _map_ function would be used, value would be packed inside 2 context
+```fsharp
+let wrapperValue = Some 2
+let myFunc x = Some (x + 3)
+
+let result = Option.map myFunc wrapperValue
+
+// val wrapperValue : int option = Some 2
+// val myFunc : x:int -> int option
+// val result : int option option = Some (Some 5)
+```
+
+__NOTE: these require native support from the language__
+
+---
+
+# Monads
+
+> Monads are just applicative functors with a join added to the interface
+
+![:scale 50%](./monads_monad.png)
+
+???
+
+* https://medium.com/@lettier/your-easy-guide-to-monads-applicatives-functors-862048d61610
+
+Kind of like LINQ.
+
+1. Take list values
+2. Do some functions
+3. Get Queryable
+---
+
+# F# Type Providers
+
+> An F# type provider is a component that provides types, properties, and methods for use in your program. 
+
+--
+
+> Automatically creates types models from external data sources: e.g. Databases, APIs (Swagger), Excel, etc.
+
+--
+
+Data handling and type providers example:
+
+https://bitbucket.org/vincit/employee-survey/src/master/fs-parser/SurveyParser/
+
+---
+
+# Another functional language - Clojure
+
+Clojure is a Lisp, so it has different syntax than most "normal" looking languages
+
+```clj
+(def hello "hello world!")
+(defn  callPrint [x y] (println x y))
+(callPrint hello "by: James")
+
+;; hello world! by: James
+```
+
+Guides:
+> https://clojure.org/guides/learn/syntax
+
+> https://kimh.github.io/clojure-by-example
+
+Clojure Koans:
+> https://github.com/functional-koans/clojure-koans
+
+> https://github.com/functional-koans/clojure-koans#installation-with-docker
+
+???
+
+* Windows: docker run --rm -it -v %cd%:/app -w /app clojure lein repl
+* execute command: (exec "run")
+---
+
+# Clojure Hands-on
+
+> When given 500 character length string of numbers, find the maximum value when multiplying five consecutive numbers
+
+Get source code from GitHub:
+> https://github.com/ttu/scratchpad/tree/master/Clojure/devdays-handson
+
+* Use https://repl.it/ to execute Clojure code
+* C# code is for LinqPad (https://www.linqpad.net/)
+---
+
+# Clojure vs F-sharp
+
+```clj
+(def numbers-in-string (str "37900490610897696126265185408732594047834333441947")
+
+(apply max(map #(reduce * %) (partition 5 1 (map #(Character/getNumericValue %) numbers-in-string))))
+
+;; Littlebit readable syntax
+
+(->> numbers-in-string
+     (map #(Character/getNumericValue %))
+     (partition 5 1)
+     (map #(reduce * %))
+     (apply max))
+```
+
+```fsharp
+let numbersInString = "37900490610897696126265185408732594047834333441947"
+
+let max = numbersInString
+ |> Seq.toList
+ |> List.map System.Char.GetNumericValue
+ |> List.windowed 5
+ |> List.map (List.reduce (fun acc elem -> acc * elem))
+ |> List.max
+ ```
+
+---
+
+# F-sharp vs Typescript
+
+```fsharp
+let numbersInString = "37900490610897696126265185408732594047834333441947"
+
+let max = numbersInString
+ |> Seq.toList
+ |> List.map System.Char.GetNumericValue
+ |> List.windowed 5
+ |> List.map (List.reduce (fun acc elem -> acc * elem))
+ |> List.max
+ ```
+
+Typescript implementation is not as pretty, especially as Array doesn't have partition function.
+
+```ts
+const numbersInString = '37900490610897696126265185408732594047834333441947';
+const ints = [...numbersInString].map(c => parseInt(c));
+
+const max = ints
+    .map((item, index) => ({ I: item, idx: index}))
+    .map(i => ints.slice(i.idx, i.idx + 5))
+    .map(i => i.reduce((prev, curr) => prev * curr))
+    .reduce((prev, curr) => curr > prev ? curr : prev, 0);
+```
+
+---
+
+# Game with a Functional languages
+
+https://tpetricek.github.io/Fable/samples/mario/index.html
+
+---
+
+# API with Functional languages
+
+Examples how we can craete an API with functional languages.
+
+* In the beginnign functional API's are a thing of beauty
+* Compose out of the box helps to create request pipelines
+
+--
+
+## Problem
+
+* After a while real world requirements ruin everything
+ * Function for handling the endpoint is not just few lines of code
+
+--
+
+__Suave__ is F# Web Framework
+
+https://suave.io
+
+Example project:
+
+https://github.com/gothinkster/fsharp-realworld-example-app/blob/master/suaveio_dotnetcore2/Program.fs
+
+???
+
+* Compose vs middlewares
+* Take function API examples with a grain of salt, as examples are usually simple
+* Event this goes fast to wtf: https://suave.io/async.html
+
+---
+
+# Clojure REST API
+
+Check how REST API implemented with Clojure looks like:
+> https://www.codementor.io/tamizhvendan/developing-restful-apis-in-clojure-using-compojure-api-and-toucan-part-1-oc6yzsigc
+
+> https://github.com/demystifyfp/BlogSamples/tree/master/clojure/restful-crud/src/restful_crud
+
+--
+
+???
+
+* TODO: Show real world problems with Spring 5 API
+
+---
+
+# Typescript / Express API example
+
+```ts
+const router = addAsync(express.Router());
+
+router.getAsync('/', getRaces);
+router.getAsync('/popular-races', cacheMiddleware(5 * 60), getPopularRaces);
+router.getAsync('/latest-efforts', cacheMiddleware(5 * 60), getLatestEffots);
+router.postAsync('/', createRace);
+router.putAsync('/:id', updateRace);
+router.postAsync('/:id/join', joinRace);
+router.postAsync('/:id/leave', leaveRace);
+```
+
+Functionality moved to another files, to make API definition clean.
+
+---
+
+# Things to take from FP to OOP
+
+* Keep data and functions separate
+* Use pure functions
+* Functions as parameters (HOF)
+* Classes are rarely needed
+  * Only readonly variables in classes
+  * Easier to follow logic when object's internal state can't change
+* Do not mutate state unless necessary
+* Use functional style libraries if array functions are not enough
+
+---
+
+# Summary
+
+The problem with a completely new programming paradigm isn’t learning a new languag, as language syntax is merely details. The tricky part is learning to __think in a different way__. 
+
+OO and Functional languages getting closer to each other.
+
+* [Simon Peyton Jones - Haskell is (used to be) useless](https://www.youtube.com/watch?v=iSmkqocn0oQ)
+* [GOTO 2018 • Functional Programming in 40 Minutes • Russ Olsen](https://www.youtube.com/watch?v=0if71HOyVjY)
+* [Hitler reacts to functional programming](https://www.youtube.com/watch?v=ADqLBc1vFwI)
+* [Why Isn't Functional Programming the Norm?](https://www.youtube.com/watch?v=QyJZzq0v7Z4)
+
+---
+
+### Links & mages
+
+* https://fsharpforfunandprofit.com/
+* https://dev.to/rametta/f-for-js-devs-2b88
+* https://medium.com/beingprofessional/understanding-functor-and-monad-with-a-bag-of-peanuts-8fa702b3f69e
+* https://mikhail.io/2018/07/monads-explained-in-csharp-again/
+* https://gist.github.com/ToJans/e57e2170e050a671e07b
+* https://hackernoon.com/kotlin-functors-applicatives-and-monads-in-pictures-part-1-3-c47a1b1ce251
+* https://hackernoon.com/kotlin-functors-applicatives-and-monads-in-pictures-part-2-3-f99a09efd1ec
+* https://hackernoon.com/kotlin-functors-applicatives-and-monads-in-pictures-part-3-3-832d58d92445
+
+## Images
+* https://imgs.xkcd.com/comics/haskell_2x.png
+* https://cdn-images-1.medium.com/max/1400/0*YZDbwqs5Vxy-ldbA.png
+* https://cdn-images-1.medium.com/max/1400/0*yWziebMi8kBhH4Sn.png
+* https://cdn-images-1.medium.com/max/1400/0*eElNlhORdSeUxp6D.png
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      remark.macros.scale = function (percentage) {
+        var url = this;
+        return '<div style="text-align: center;"><img src="' + url + '" style="width: ' + percentage + '" /></div>';
+      };
+
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
