@@ -248,8 +248,9 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
 * Functional style is common
 * Classic OOP not so much anymore
 
-> "Modern" OO avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
+> "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
 
+_(wait for the next slide)_
 --
 
 
@@ -268,6 +269,46 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
      * Active Record (Rails): https://www.martinfowler.com/eaaCatalog/activeRecord.html
      * Anemic domain model was anti-pattern
 
+---
+
+# FP vs OOP Reality
+
+> "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
+
+```js
+const send = (connection, data) => {
+    connection.post(data);
+};
+
+const createPartialApplication = (connection) => (data) => send(connection, data);
+
+class Service {
+  constructor(connection) {
+    this.connection = connection;
+  }
+  send(data) {
+    this.connection.post(data);
+  }
+}
+
+const myAPIConnection = {
+  post: (data) => console.log(data),
+};
+
+const data = { payload: "info" };
+const sendFunc = createPartialApplication(myAPIConnection);
+sendFunc(data);
+const s = new Service(myAPIConnection);
+s.send(data);
+```
+
+???
+* Partial application:
+  * Providing function with fewer arguments than it expects is called Partial Application of functions
+  * Returns a function with fewer parameters
+  * Partial application are language feature of functional languages, but in e.g.JavaScript, they must be implemented as wrapper-functions
+* // connection is passed as parameter
+* // Partail application of send function
 ---
 
 # Common OOP nowadays (Modern OOP)
