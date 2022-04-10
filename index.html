@@ -254,18 +254,17 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
 
 
 * FP good for data handling
-  * API's mostly handle data
-  * Front ends mostly handle data
+  * APIs mostly handle data
+  * Front-ends mostly handle data
 
 ???
 
 * Most functional examples are just functional style
-* Or is classic OOP still common somewhere?
-* Traditional OOP has not been common in ages
-  * Data bundled all the time. Less things to keep track. E.g. Data-object has data and functionality. No one considers it as bad practice. Objects not bad
+* Traditional OOP common with some frameworks, e.g. Django / Rails
+  * Data bundled all the time. Less things to keep track. E.g. Date-object has data and functionality. No one considers it as bad practice. Objects not bad
     * https://www.youtube.com/watch?v=GKYCA3UsmrU&feature=youtu.be&t=4m50s
   * Sepearate Services and data
-  * Legacy
+  * "Legacy"
      * Active Record (Rails): https://www.martinfowler.com/eaaCatalog/activeRecord.html
      * Anemic domain model was anti-pattern
 
@@ -274,7 +273,7 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
 # Common OOP nowadays (Modern OOP)
 
 * Dumb value objects
-  * All about data they encapsulate. Methods are constructors and some Hash-functions used for comparisons etc.
+  * All about data they encapsulate. Methods are constructors and e.g. hash-functions which are used for comparisons etc.
   * Records
 
 
@@ -283,7 +282,7 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
 
 * Stateless behaviour objects
   * Service classes
-  * All state is passed in if needed ("dependency injection") 
+  * State is passed in if it is required ("dependency injection") 
   * "Pure"-functions
 
 --
@@ -314,7 +313,7 @@ Smalltalk -> Python (1991)
 
 --
 
-In the 90's functional languages were still more used by the academy.
+In the 90's functional languages were still mostly used by the academy.
 
 ```txt
 Erlang (1986)
@@ -355,7 +354,7 @@ export { fetchData }
 
 class Service {
   this.url = 'https://myapi//endpoint';
-​
+
   fetchData() {
     return axios.fetch(this.url);
   }
@@ -373,12 +372,12 @@ const createService = (connection) => ({
     connection.post(data);
   },
 });
-​
+
 class Service {
   constructor(connection) {
     this.connection = connection;
   }
-​
+
   send(data) {
     data.env = "Service";
     this.connection.post(data);
@@ -388,16 +387,15 @@ class Service {
 const myAPIConnection = {
   post: (data) => console.log(data),
 };
-​
+
 const data = { payload: "info" };
 
 const service = createService(myAPIConnection);
 const s = new Service(myAPIConnection);
 
-service.send(payload);
-s.send(payload);
-​```
-
+service.send(data);
+s.send(data);
+```
 Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/38eb2a4851f0061911421ef8577785806d699d55/PatternsAndPrinciples/Patterns/Other/oop_vs_fp_modules.js)
 
 
@@ -629,7 +627,6 @@ const getNewValue = (getData: (id: string) => any, id:string,  x: number) => {
   const result = data.value * x;
   return result;
 }
-
 // const get = (id: string) => DB.get(id);
 // const get = (id: string) => ({ id, value: 2 });
 ```
