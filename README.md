@@ -2,7 +2,7 @@
 
 Functional programming course for TypeScript developers
 
-[Slides](https://ttu.github.io/functional-programming-course/)
+[Slides](https://ttu.github.io/functional-programming-presentation/)
 
 ## Agenda
 
