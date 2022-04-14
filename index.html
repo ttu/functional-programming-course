@@ -250,7 +250,7 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
 
 > "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
 
-_(wait for the next slide)_
+_(Example on the next slide)_
 --
 
 
@@ -271,16 +271,12 @@ _(wait for the next slide)_
 
 ---
 
-# FP vs OOP Reality
-
 > "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
 
 ```js
 const send = (connection, data) => {
     connection.post(data);
 };
-
-const createPartialApplication = (connection) => (data) => send(connection, data);
 
 class Service {
   constructor(connection) {
@@ -296,11 +292,17 @@ const myAPIConnection = {
 };
 
 const data = { payload: "info" };
-const sendFunc = createPartialApplication(myAPIConnection);
-sendFunc(data);
+
 const s = new Service(myAPIConnection);
 s.send(data);
+
+const createPartialApplication = (connection) => (data) => send(connection, data);
+
+const sendFunc = createPartialApplication(myAPIConnection);
+sendFunc(data);
 ```
+
+Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/13d31ead87fa4b9b6684deaae98ec55045926d33/PatternsAndPrinciples/Patterns/Other/oop_vs_fp_modules.js)
 
 ???
 * Partial application:
@@ -371,6 +373,11 @@ OOP languages usually have included bells & whistles out of the box.
 
 [Simon Peyton Jones - Haskell is (used to be) useless](https://www.youtube.com/watch?v=iSmkqocn0oQ)
 
+???
+
+* Code navigation is easy with classes
+* Tooling has been good
+* Editors can guide developers better (intellisense)
 ---
 
 # OOP - Information hiding
@@ -448,10 +455,88 @@ Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/38eb2a4851f
   * Best practices nowadays encourages to use composition
   * Even in game programming entity component systems are common
 
-```js
-TODO
+--
+
+```ts
+class Sender {
+  send(data) {
+    const toSend = this.parse(data)
+    this.sendToSrouce(toSend);
+  }
+}
+
+class BusSender extends Sender {
+  override parse(data) { return { ...data, from: 'bus' }; }
+  override sendToSource(data) { console.log('Off to bus', { data }); }
+}
+
+class DbSender extends Sender {
+  override parse(data) { return { ...data, from: 'sql' }; }
+  override sendToSource(data) { console.log('Off to DB', { data }); }
+}
+
+const busSender = new BusSender();
+const dbSender = new DbSender();
+busSender.send({ id: 1, text: 'hello'});
 ```
 
+---
+
+# OOP - Inheritance / Composition
+
+```ts
+class Sender {
+  constructor(parseFunc, sendFunc) {
+    this.parseFunc = parseFunc;
+    this.sendFunc = sendFunc;
+  }
+  send(data) {
+    const toSend = this.parseFunc(data);
+    this.sendFunc(toSend);
+  }
+}
+
+const busParse = (data) => ({ ...data, from: 'bus' })
+const busSend = (data) => { console.log('Off to bus', { data }); }
+
+const busSenderComposed = new Sender(busParse, busSend);
+
+busSenderComposed.send({ id: 1, text: 'hello'});
+```
+--
+```ts
+const dbParse = (data) => ({ ...data, from: 'sql' })
+const dbSend = (data) => { console.log('Off to DB', { data }); }
+
+const dbSenderComposed = new Sender(dbParse, dbSend);
+
+dbSenderComposed.send({ id: 1, text: 'hello'});
+```
+
+???
+* Harder to navigate to logic
+---
+
+# OOP - Inheritance / Partial application
+
+> "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
+
+```ts
+const busParse = (data) => ({ ...data, from: 'bus' })
+const busSend = (data) => { console.log('Off to bus', { data }); }
+
+const sqlParse = (data) => ({ ...data, from: 'sql' })
+const sqlSend = (data) => { console.log('Off to DB', { data }); }
+
+
+const busSenderFunc = (data) => busSend(busParse(data));
+const dbSenderFunc = (data) => sqlSend(sqlParse(data));
+
+// Pipelining is coming soon-ish to JS
+// const busSenderFunc = (data) => busParse |> busSend;
+
+busSenderFunc({ id: 1, text: 'hello'});
+```
 ---
 
 # OOP - Polymorphism
@@ -641,7 +726,7 @@ Expected to be _any_ -> Not full type inference
 
 ## Pure functions
 
-Fetching from DB is a side effect
+Fetching data from DB is a side effect
 ```ts
 const getNewValue = (id: string, x: number) => {
   const data = DB.get(id);
@@ -652,7 +737,7 @@ const getNewValue = (id: string, x: number) => {
 
 --
 
-Data is passed to functions, so this is pure
+Data is passed to the function, so this is pure
 ```ts
 const getNewValue = (data: any, x: number) => {
   const result = data.value * x;
@@ -661,7 +746,7 @@ const getNewValue = (data: any, x: number) => {
 ```
 --
 
-Function that returns the data is passed to function, so this is also pure
+Function, that returns the data, is passed to the function, so this is also pure
 ```ts
 const getNewValue = (getData: (id: string) => any, id:string,  x: number) => {
   const data = getData(id);
@@ -1521,9 +1606,6 @@ let num2 = U (I 2)
 
 * TODO: Example
 * No need to have complex types/classes as these can represent complex types easily
-
----
-
 
 ---
 
