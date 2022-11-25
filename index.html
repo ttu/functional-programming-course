@@ -241,22 +241,18 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
 # FP vs OOP Reality
 
 * Languages have evolved a lot
-
 --
-
 
 * Functional style is common
 * Classic OOP not so much anymore
 
-> "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
-
-_(Example on the next slide)_
 --
 
+> "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
 
-* FP good for data handling
-  * APIs mostly handle data
-  * Front-ends mostly handle data
+> FP good for data handling. "Modern" APIs and Front-ends mostly handle data
+
+_(Example on the next slide)_
 
 ???
 
@@ -274,10 +270,6 @@ _(Example on the next slide)_
 > "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
 
 ```js
-const send = (connection, data) => {
-    connection.post(data);
-};
-
 class Service {
   constructor(connection) {
     this.connection = connection;
@@ -291,15 +283,46 @@ const myAPIConnection = {
   post: (data) => console.log(data),
 };
 
-const data = { payload: "info" };
+const apiService = new Service(myAPIConnection);
 
-const s = new Service(myAPIConnection);
-s.send(data);
+// Usage
+
+const handleData = (service: Service) => {
+  // Do something and use service to send the data 
+  const data = { payload: "info" };
+  service.send(data);
+}
+
+handleData(apiService)
+
+```
+
+---
+
+> "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
+
+```js
+const send = (connection, data) => {
+  connection.post(data);
+};
 
 const createPartialApplication = (connection) => (data) => send(connection, data);
 
-const sendFunc = createPartialApplication(myAPIConnection);
-sendFunc(data);
+const myAPIConnection = {
+  post: (data) => console.log(data),
+};
+
+const apiSend = createPartialApplication(myAPIConnection);
+
+// Usage
+
+const handleData = (send) => {
+  // Do something and use service to send the data 
+  const data = { payload: "info" };
+  send(data);
+}
+
+handleData(apiSend)
 ```
 
 Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/13d31ead87fa4b9b6684deaae98ec55045926d33/PatternsAndPrinciples/Patterns/Other/oop_vs_fp_modules.js)
@@ -397,9 +420,9 @@ const url = 'https://myapi//endpoint'
 const fetchData = () => axios.fetch(url);
 
 export { fetchData }
+```
 
-// or
-
+```js
 class Service {
   this.url = 'https://myapi//endpoint';
 
@@ -416,7 +439,7 @@ Functions hiding information:
 ```js
 const createService = (connection) => ({
   send: (data) => {
-    data.env = "createService";
+    data.env = 'createService';
     connection.post(data);
   },
 });
@@ -427,7 +450,7 @@ class Service {
   }
 
   send(data) {
-    data.env = "Service";
+    data.env = 'Service';
     this.connection.post(data);
   }
 }
@@ -436,10 +459,10 @@ const myAPIConnection = {
   post: (data) => console.log(data),
 };
 
-const data = { payload: "info" };
-
 const service = createService(myAPIConnection);
 const s = new Service(myAPIConnection);
+
+const data = { payload: 'info' };
 
 service.send(data);
 s.send(data);
@@ -458,26 +481,28 @@ Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/38eb2a4851f
 --
 
 ```ts
-class Sender {
+abstract class Sender {
   send(data) {
     const toSend = this.parse(data)
-    this.sendToSrouce(toSend);
+    this.sendToSource(toSend);
   }
+  abstract sendToSource(data)
+  abstract parse(data)
 }
 
-class BusSender extends Sender {
-  override parse(data) { return { ...data, from: 'bus' }; }
-  override sendToSource(data) { console.log('Off to bus', { data }); }
+class MessageBusSender extends Sender {
+  override parse(data) { return { ...data, from: 'message bus' }; }
+  override sendToSource(data) { console.log('Send to bus', { data }); }
 }
 
 class DbSender extends Sender {
   override parse(data) { return { ...data, from: 'sql' }; }
-  override sendToSource(data) { console.log('Off to DB', { data }); }
+  override sendToSource(data) { console.log('Send to DB', { data }); }
 }
 
-const busSender = new BusSender();
+const msgBusSender = new MessageBusSender();
 const dbSender = new DbSender();
-busSender.send({ id: 1, text: 'hello'});
+msgBusSender.send({ id: 1, text: 'hello'});
 ```
 
 ---
@@ -496,17 +521,18 @@ class Sender {
   }
 }
 
-const busParse = (data) => ({ ...data, from: 'bus' })
-const busSend = (data) => { console.log('Off to bus', { data }); }
+const msgBusParse = (data) => ({ ...data, from: 'message bus' })
+const msgBusSend = (data) => { console.log('Send to message bus', { data }); }
 
-const busSenderComposed = new Sender(busParse, busSend);
+const msgBusSenderComposed = new Sender(msgBusParse, msgBusSend);
 
-busSenderComposed.send({ id: 1, text: 'hello'});
+msgBusSenderComposed.send({ id: 1, text: 'hello'});
 ```
 --
+SQL example
 ```ts
 const dbParse = (data) => ({ ...data, from: 'sql' })
-const dbSend = (data) => { console.log('Off to DB', { data }); }
+const dbSend = (data) => { console.log('Send to DB', { data }); }
 
 const dbSenderComposed = new Sender(dbParse, dbSend);
 
@@ -522,20 +548,20 @@ dbSenderComposed.send({ id: 1, text: 'hello'});
 > "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
 
 ```ts
-const busParse = (data) => ({ ...data, from: 'bus' })
-const busSend = (data) => { console.log('Off to bus', { data }); }
+const msgBusParse = (data) => ({ ...data, from: 'message bus' })
+const msgBusSend = (data) => { console.log('Send to message bus', { data }); }
 
 const sqlParse = (data) => ({ ...data, from: 'sql' })
-const sqlSend = (data) => { console.log('Off to DB', { data }); }
+const sqlSend = (data) => { console.log('Send to DB', { data }); }
 
 
-const busSenderFunc = (data) => busSend(busParse(data));
+const msgBusSenderFunc = (data) => msgBusSend(msgBusParse(data));
 const dbSenderFunc = (data) => sqlSend(sqlParse(data));
 
 // Pipelining is coming soon-ish to JS
-// const busSenderFunc = (data) => busParse |> busSend;
+// const msgBusSenderFunc = (data) => msgBusParse |> msgBusSend;
 
-busSenderFunc({ id: 1, text: 'hello'});
+msgBusSenderFunc({ id: 1, text: 'hello'});
 ```
 ---
 
