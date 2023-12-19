@@ -2,18 +2,25 @@
 <html>
   <head>
     <title>Functional Programming</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <style>
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
       @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
 
-      body { font-family: 'Droid Serif'; }
-      h1, h2, h3 {
-        font-family: 'Yanone Kaffeesatz';
+      body {
+        font-family: "Droid Serif";
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: "Yanone Kaffeesatz";
         font-weight: normal;
       }
-      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code,
+      .remark-inline-code {
+        font-family: "Ubuntu Mono";
+      }
     </style>
   </head>
   <body>
@@ -114,7 +121,7 @@ Object-oriented programming (__OOP__) and Functional programming (__FP__) have t
 
 --
 
-But they have different approaches for how to best create those programs.
+But they have different approaches for what is the best way to create those programs.
 
 ---
 
@@ -237,6 +244,59 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
 
 ---
 
+# Functional Programming and side effects
+
+Side effects are often necessary for applications to interact with the external environment, such as accessing databases or sending user notifications.
+
+--
+
+> Functional programming is a programming paradigm, a style of building the structure and elements of computer programs, that treats computation as the evaluation of mathematical functions and avoids changing-state and mutable data.
+
+-- Wikipedia https://en.wikipedia.org/wiki/Functional_programming
+
+--
+
+> Functional programming is a programming style that uses only pure functions without side effects.
+
+-- Grogging Simplicity
+
+--
+
+1. __Pure functions__ are functions that depend only on their arguments and don’t have any side effects. Given the same arguments, they will always produce the same return value
+
+2. __Side effects__ are anything a function does other than returning a value, like sending an email or modifying global state
+
+---
+
+# FP - Actions, Calcutions, Data (ACD) 
+
+The ACD concept is useful for understanding the principles of functional programming and for writing more maintainable and reliable code.
+
+--
+
+With a clear distinction between actions, calculations, and data, programmers can avoid introducing side effects and can more easily reason about the behavior of their code.
+
+--
+
+* Data
+  * Facts about events, just data, nothing else
+
+
+--
+
+* Calculation
+  * Pure functions
+  * Computations from inputs to outputs
+  * Depend only on their input
+
+
+--
+
+* Action
+  * Functions with side-effects
+  * Depend on when they are called or how many times they are called
+
+---
 
 # FP vs OOP Reality
 
@@ -250,7 +310,9 @@ http://blog.fogus.me/2013/07/22/fp-vs-oo-from-the-trenches/
 
 > "Modern" OOP avoids inheritance and objects end up looking like functions/modules, where constructors are partial application.
 
-> FP good for data handling. "Modern" APIs and Front-ends mostly handle data
+> FP fundamentally about transforming and handling data.
+
+> "Modern" APIs and Front-ends mostly handle data.
 
 _(Example on the next slide)_
 
@@ -287,13 +349,15 @@ const apiService = new Service(myAPIConnection);
 
 // Usage
 
-const handleData = (service: Service) => {
+const handleData = (service: Service, input: any) => {
   // Do something and use service to send the data 
-  const data = { payload: "info" };
+  const data = { payload: "info", data: "some" };
   service.send(data);
 }
 
-handleData(apiService)
+handleData(apiService, {data: 2})
+// Often handleData would be a part of some other class
+// and service passed through constructor
 
 ```
 
@@ -316,13 +380,13 @@ const apiSend = createPartialApplication(myAPIConnection);
 
 // Usage
 
-const handleData = (send) => {
+const handleData = (send, input) => {
   // Do something and use service to send the data 
-  const data = { payload: "info" };
+  const data = { payload: "info", data: "some" };
   send(data);
 }
 
-handleData(apiSend)
+handleData(apiSend, {data: 2})
 ```
 
 Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/13d31ead87fa4b9b6684deaae98ec55045926d33/PatternsAndPrinciples/Patterns/Other/oop_vs_fp_modules.js)
@@ -338,7 +402,7 @@ Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/13d31ead87f
 
 # Common OOP nowadays (Modern OOP)
 
-* Dumb value objects
+* Dumb value objects (Data)
   * All about data they encapsulate. Methods are constructors and e.g. hash-functions which are used for comparisons etc.
   * Records
 
@@ -346,7 +410,7 @@ Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/13d31ead87f
 --
 
 
-* Stateless behaviour objects
+* Stateless behaviour objects (Calculation)
   * Service classes
   * State is passed in if it is required ("dependency injection") 
   * "Pure"-functions
@@ -354,8 +418,9 @@ Source: [GitHub](https://github.com/ttu/patterns-and-principles/blob/13d31ead87f
 --
 
 
-* Module objects
+* Module objects (Action)
   * Grouping related functionality together
+  * Functionality with side effects
 
 --
 
@@ -570,7 +635,7 @@ msgBusSenderFunc({ id: 1, text: 'hello'});
 * Polymorphism
   * Pass functions as arguments instead of base-class objects...
 
-```js
+```ts
 // BaseDataSender.send(payload)
 // AwsDataSender : BaseDataSender
 // SqlDataSender : BaseDataSender
@@ -588,7 +653,7 @@ const send = (senderFunc: (payload) => void) => {
 }
 ```
 
-* Many OOP patterns can be implemented with functions but lose the type safety
+* Many OOP patterns can be implemented with functions, but lose the type safety
 * Using typed data tries to hide complexity
 
 
@@ -2291,12 +2356,17 @@ OO and Functional languages getting closer to each other.
 * https://cdn-images-1.medium.com/max/1400/0*eElNlhORdSeUxp6D.png
 
     </textarea>
-    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
-    </script>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
     <script>
       remark.macros.scale = function (percentage) {
         var url = this;
-        return '<div style="text-align: center;"><img src="' + url + '" style="width: ' + percentage + '" /></div>';
+        return (
+          '<div style="text-align: center;"><img src="' +
+          url +
+          '" style="width: ' +
+          percentage +
+          '" /></div>'
+        );
       };
 
       var slideshow = remark.create();
